@@ -6,23 +6,22 @@ export default {
 	data() {
 		return {
 			store,
-			title: 'characters',
+			title: "characters",
 			characters: [],
 		};
 	},
 
 	methods: {
-		fetchCharacters(endpoint = store.api.url + '/characters') {
+		fetchCharacters(endpoint = store.api.url + "/characters") {
 			axios.get(endpoint).then((response) => {
 				this.characters = response.data;
-				console.log(this.characters)
-			})
-		}
+			});
+		},
 	},
 
 	created() {
-		this.fetchCharacters()
-	}
+		this.fetchCharacters();
+	},
 };
 </script>
 
@@ -39,11 +38,10 @@ export default {
 					<th scope="col">speed</th>
 					<th scope="col">life</th>
 					<th scope="col">type</th>
-					<th scope="col">items</th>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody>
-
 				<tr v-for="character in characters">
 					<td>
 						{{ character.name }}
@@ -54,14 +52,16 @@ export default {
 					<td>{{ character.life }}</td>
 					<td>{{ character.intelligence }}</td>
 					<td>{{ character.type.name }}</td>
-					<th>
-
-					</th>
+					<td>
+						<router-link
+							class="btn btn-primary"
+							:to="{ name: 'fight', params: { character: character.id } }"
+							>FIGHT!!</router-link
+						>
+					</td>
 				</tr>
-
 			</tbody>
 		</table>
-
 	</div>
 </template>
 
