@@ -8,6 +8,7 @@ export default {
 			userCharacter: {},
 			cpuCharacter: {},
 			winMessage: "",
+			messages: [],
 			userAttack: "",
 			userDefence: "",
 			userLife: "",
@@ -25,7 +26,7 @@ export default {
 			axios.get(endpoint).then((response) => {
 				this.userCharacter = response.data.user_character;
 				this.cpuCharacter = response.data.cpu_character;
-				this.fight();
+				// this.fight();
 			});
 		},
 		fight() {
@@ -47,9 +48,20 @@ export default {
 					this.userLife = this.userLife - this.cpuCounterAttack;
 				}
 				console.log(
-					`LO USER ATTACCA \n \n user attack: ${this.userAttack} \ncpu defence: ${this.cpuDefence} \ncpu conterattack : ${this.cpuCounterAttack} \nuser life: ${this.userLife} \ncpu life: ${this.cpuLife}`
+					`LO USER ATTACCA \n \n 
+					user attack: ${this.userAttack} 
+					\ncpu defence: ${this.cpuDefence} 
+					\ncpu conterattack : ${this.cpuCounterAttack} 
+					\nuser life: ${this.userLife} 
+					\ncpu life: ${this.cpuLife}`
 				);
 
+				this.messages.push(`LO USER ATTACCA 
+				user attack: ${this.userAttack} 
+				cpu defence: ${this.cpuDefence} 
+				cpu conterattack : ${this.cpuCounterAttack} 
+				user life: ${this.userLife} 
+				cpu life: ${this.cpuLife}`)
 				// CPU ATTACK
 
 				dado = store.generateRandNumber(1, 20);
@@ -63,12 +75,15 @@ export default {
 					this.cpuCounterAttack = this.userDefence - this.cpuAttack;
 					this.cpuLife = this.cpuLife - this.userCounterAttack;
 				}
-				console.log(
-					`LA CPU ATTACA \n \n cpu attack: ${this.cpuAttack} \nuser defence: ${this.userDefence} \nuser conterattack : ${this.userCounterAttack} \nuser life: ${this.userLife} \ncpu life: ${this.cpuLife}`
-				);
+				// console.log(
+				// 	`LA CPU ATTACA \n \n cpu attack: ${this.cpuAttack} \nuser defence: ${this.userDefence} \nuser conterattack : ${this.userCounterAttack} \nuser life: ${this.userLife} \ncpu life: ${this.cpuLife}`
+				// );
+
+				this.messages.push(`LA CPU ATTACA \n \n cpu attack: ${this.cpuAttack} \nuser defence: ${this.userDefence} \nuser conterattack : ${this.userCounterAttack} \nuser life: ${this.userLife} \ncpu life: ${this.cpuLife}`)
+
 			} while (this.userLife > 0 && this.cpuLife > 0);
 
-			// let winner = "";
+			let winner = "";
 
 			// const dado = store.generateRandNumber(1, 20);
 			// const defence = 10;
@@ -79,16 +94,14 @@ export default {
 			// } else {
 			// 	winner = "CPU";
 			// }
-			// this.winMessage = `Il personaggio ${
-			// 	this.userCharacter.name
-			// } scelto dall'utente ha attaco di valore ${userStrenght} + valore del dado ${dado} = ${
-			// 	userStrenght + dado
-			// }. \nIl personaggio ${
-			// 	this.cpuCharacter.name
-			// } scelto dalla cpu ha difesa di valore ${cpuDefence} + 10 = ${
-			// 	cpuDefence + defence
-			// } . \nIl vincitore è ${winner}.`;
-			// console.log(winMessage);
+
+			if (!(this.cpuLife < 0)) winner = `CPU che ha usato il personaggio ${this.cpuCharacter.name}`;
+			if (!(this.userLife < 0)) winner = `USER che ha usato il personaggio ${this.userCharacter.name}`;
+
+			this.winMessage = `IL VINCITORE E' ${winner}.`;
+
+
+			// console.log(this.messages)
 		},
 	},
 	created() {
@@ -101,7 +114,7 @@ export default {
 <template>
 	<div class="container mt-5">
 		<div class="row">
-			<div class="col-6">
+			<div class="col-5">
 				<div class="card">
 					<div class="card-head text-center">
 						<h5 class="card-title">USER</h5>
@@ -117,8 +130,7 @@ export default {
 							<strong>defence: </strong>{{ this.userCharacter.defence }}
 						</p>
 						<p class="list-group-item">
-							<strong>intelligence: </strong
-							>{{ this.userCharacter.intelligence }}
+							<strong>intelligence: </strong>{{ this.userCharacter.intelligence }}
 						</p>
 						<p class="list-group-item">
 							<strong>speed: </strong>{{ this.userCharacter.speed }}
@@ -133,7 +145,11 @@ export default {
 				</div>
 			</div>
 
-			<div class="col-6">
+			<div class="col-2 btn-fight">
+				<button class="btn btn-danger" @click="fight()">Fight!!</button>
+			</div>
+
+			<div class="col-5">
 				<div class="card">
 					<div class="card-head text-center">
 						<h5 class="card-title">CPU</h5>
@@ -149,8 +165,7 @@ export default {
 							<strong>defence: </strong>{{ this.cpuCharacter.defence }}
 						</p>
 						<p class="list-group-item">
-							<strong>intelligence: </strong
-							>{{ this.cpuCharacter.intelligence }}
+							<strong>intelligence: </strong>{{ this.cpuCharacter.intelligence }}
 						</p>
 						<p class="list-group-item">
 							<strong>speed: </strong>{{ this.cpuCharacter.speed }}
@@ -166,6 +181,8 @@ export default {
 			</div>
 		</div>
 
+
+		<p v-for="message in messages" class="mt-3">{{ message }}</p>
 		<p class="mt-3">{{ winMessage }}</p>
 	</div>
 </template>
